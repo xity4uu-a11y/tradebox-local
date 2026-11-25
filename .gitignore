@@ -1,0 +1,36 @@
+# Build outputs & release artifacts
+dist/
+/bin/tradebox*
+/tradebox
+/tradebox.exe
+*.exe
+*.out
+coverage.txt
+
+# Runtime data & local state
+mt5-data/
+mt5-logs/
+*.log
+tradebox.local.json
+.env
+.env.*
+!.env.example
+
+# Sensitive material
+*.pem
+*.key
+*.crt
+*.p12
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Node / Python scratch artifacts if created locally
+node_modules/
+.venv/
+__pycache__/
+.pytest_cache/
