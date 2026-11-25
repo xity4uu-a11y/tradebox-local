@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TradeBox Local - 24/7 MT5 Watchdog</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-group">
+        <span class="brand-mark" aria-hidden="true">TB</span>
+        <div>
+          <div class="brand-title">TradeBox Local</div>
+          <div class="brand-subtitle">Self-Hosted 24/7 MT5 Process Supervisor &amp; Execution Telemetry</div>
+        </div>
+        <span id="version-badge" class="pill pill-neutral">v1.0.0</span>
+      </div>
+
+      <div class="topbar-actions">
+        <span id="sync-indicator" class="sync-status">Live sync</span>
+        <a id="novnc-header-link" class="btn btn-secondary" href="#" target="_blank" rel="noopener noreferrer">
+          Open Remote Desktop (noVNC)
+        </a>
+        <button id="theme-toggle" class="btn btn-ghost" type="button" aria-label="Toggle color theme">
+          Dark Mode
+        </button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="kpi-grid" aria-label="System summary metrics">
+        <article class="kpi-card">
+          <div class="kpi-label">Terminal State</div>
+          <div class="kpi-value-row">
+            <span id="kpi-state" class="kpi-value">Stopped</span>
+            <span id="kpi-state-pill" class="pill pill-neutral">STOPPED</span>
+          </div>
+          <div id="kpi-pid" class="kpi-meta mono">PID --</div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-label">Active Uptime</div>
+          <div id="kpi-uptime" class="kpi-value mono">00:00:00</div>
+          <div id="kpi-restarts" class="kpi-meta">0 restarts (0/12 last hr)</div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-label">Median Broker RTT</div>
+          <div id="kpi-rtt" class="kpi-value mono">-- ms</div>
+          <div id="kpi-brokers" class="kpi-meta">0 endpoints monitored</div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-label">MT5 Journal Alerts</div>
+          <div id="kpi-errors" class="kpi-value mono">0</div>
+          <div id="kpi-journal-meta" class="kpi-meta">0 trades | 0 tracked logs</div>
+        </article>
+      </section>
+
+      <section class="grid-two">
+        <!-- Terminal Health Card -->
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Terminal Health &amp; Watchdog</h2>
+              <p class="card-subtitle">Capped exponential backoff supervision with crash-loop circuit breaker</p>
+            </div>
+            <span id="term-status-pill" class="pill pill-neutral">STOPPED</span>
+          </div>
+
+          <div class="detail-grid">
+            <div class="detail-item">
+              <span class="detail-label">Process ID</span>
+              <span id="term-pid" class="detail-val mono">--</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Session Uptime</span>
+              <span id="term-uptime" class="detail-val mono">00:00:00</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Total Uptime</span>
+              <span id="term-total-uptime" class="detail-val mono">00:00:00</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Restarts (1h Budget)</span>
+              <span id="term-restarts" class="detail-val mono">0 (0 / 12)</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Last Exit Code</span>
+              <span id="term-exit" class="detail-val mono">0</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Consecutive Failures</span>
+              <span id="term-failures" class="detail-val mono">0</span>
+            </div>
+          </div>
+
+          <div class="command-box">
+            <span class="command-label">Supervised Command</span>
+            <code id="term-command" class="mono">--</code>
+          </div>
+
+          <div id="term-error-banner" class="notice-banner notice-alert hidden"></div>
+
+          <div class="action-row">
+            <button id="btn-start" class="btn btn-primary" type="button">Start</button>
+            <button id="btn-restart" class="btn btn-secondary" type="button">Restart</button>
+            <button id="btn-stop" class="btn btn-danger" type="button">Stop</button>
+            <a id="novnc-card-link" class="btn btn-ghost push-right" href="#" target="_blank" rel="noopener noreferrer">
+              Remote Desktop (noVNC)
+            </a>
+          </div>
+        </article>
+
+        <!-- Broker Execution Latency Card -->
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Broker TCP Execution Latency</h2>
+              <p class="card-subtitle">Direct TCP handshake RTT, percentiles, jitter, and packet loss</p>
+            </div>
+            <button id="btn-probe-now" class="btn btn-secondary btn-sm" type="button">Probe Now</button>
+          </div>
+
+          <div id="broker-list" class="broker-list">
+            <div class="empty-state">Waiting for initial broker TCP latency probes...</div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Live MT5 Journal & EA Log Stream -->
+      <section class="card">
+        <div class="card-header wrap-header">
+          <div>
+            <h2 class="card-title">Live MT5 Journal &amp; Expert Advisor Stream</h2>
+            <p id="journal-files-meta" class="card-subtitle">Automatic UTF-16LE (BOM / BOM-less) and UTF-8 incremental log tailing</p>
+          </div>
+          <div class="segmented" role="tablist" aria-label="Filter MT5 journal entries">
+            <button class="seg-btn active" data-filter="all" type="button">All</button>
+            <button class="seg-btn" data-filter="errors" type="button">Errors</button>
+            <button class="seg-btn" data-filter="trades" type="button">Trades</button>
+            <button class="seg-btn" data-filter="connections" type="button">Connections</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th style="width: 110px;">Time</th>
+                <th style="width: 96px;">Severity</th>
+                <th style="width: 118px;">Category</th>
+                <th style="width: 190px;">Source / EA</th>
+                <th>Decoded Event</th>
+                <th style="width: 96px;">Encoding</th>
+              </tr>
+            </thead>
+            <tbody id="journal-tbody">
+              <tr>
+                <td colspan="6" class="empty-cell">No MT5 log entries decoded yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Alerts + 24/7 Host Readiness + Community Plugins -->
+      <section class="grid-two">
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Alert Dispatcher &amp; Delivery Log</h2>
+              <p class="card-subtitle">Telegram, Discord, Slack, and HMAC-SHA256 webhooks with cooldown protection</p>
+            </div>
+            <button id="btn-test-alert" class="btn btn-secondary btn-sm" type="button">Send Test Alert</button>
+          </div>
+
+          <div id="channel-strip" class="channel-strip"></div>
+          <div id="alert-feedback" class="notice-banner notice-neutral hidden"></div>
+
+          <div id="alert-history" class="timeline-list">
+            <div class="empty-state">No alerts dispatched in this session.</div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">24/7 Host Readiness &amp; Power Guide</h2>
+              <p id="host-summary-line" class="card-subtitle">Local hardware diagnostics and lid-closed keep-awake commands</p>
+            </div>
+            <span id="host-ready-pill" class="pill pill-healthy">READY</span>
+          </div>
+
+          <div id="host-checks" class="checks-list"></div>
+
+          <div class="power-section">
+            <div class="power-header">
+              <span class="detail-label">Non-Destructive Keep-Awake Commands</span>
+              <div class="segmented segmented-sm" id="os-tabs">
+                <button class="seg-btn active" data-os="windows" type="button">Windows</button>
+                <button class="seg-btn" data-os="linux" type="button">Linux</button>
+                <button class="seg-btn" data-os="darwin" type="button">macOS</button>
+              </div>
+            </div>
+            <p id="power-notes" class="card-subtitle"></p>
+            <pre id="power-commands" class="code-block mono"></pre>
+          </div>
+        </article>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Validated Community Plugins</h2>
+            <p class="card-subtitle">Schema-verified presets loaded from the local plugins directory</p>
+          </div>
+          <span id="plugin-count-pill" class="pill pill-neutral">0 Loaded</span>
+        </div>
+
+        <div id="plugins-grid" class="plugins-grid">
+          <div class="empty-state">No community plugins found.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/assets/app.js"></script>
+</body>
+</html>

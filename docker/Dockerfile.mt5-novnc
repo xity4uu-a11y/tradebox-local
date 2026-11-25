@@ -1,0 +1,68 @@
+# Stage 1: Build static pure-Go tradebox binary (zero CGo / OpenSSL deps)
+FROM golang:1.22-bookworm AS builder
+
+WORKDIR /src
+COPY go.mod ./
+COPY cmd ./cmd
+COPY internal ./internal
+COPY plugins ./plugins
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -trimpath -ldflags="-s -w -X main.Version=1.0.0" \
+    -o /out/tradebox ./cmd/tradebox
+
+# Stage 2: Debian Bookworm + Wine64 + Xvfb + Fluxbox + x11vnc + noVNC + TradeBox Watchdog
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    DISPLAY=:99 \
+    SCREEN_WIDTH=1366 \
+    SCREEN_HEIGHT=768 \
+    SCREEN_DEPTH=24 \
+    WINEARCH=win64 \
+    WINEPREFIX=/mt5-data/wineprefix \
+    WINEDEBUG=-all \
+    MT5_DIR=/mt5-data/terminal \
+    TRADEBOX_CONFIG=/mt5-data/tradebox.json
+
+# Enable multiarch i386 for Wine Win32 compatibility alongside Wine64
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+      ca-certificates \
+      curl \
+      fluxbox \
+      fonts-dejavu-core \
+      novnc \
+      procps \
+      python3-websockify \
+      websockify \
+      wine \
+      wine32 \
+      wine64 \
+      x11vnc \
+      xvfb \
+      xterm && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create unprivileged trader account and persistent data directory
+RUN useradd -m -u 1000 -s /bin/bash trader && \
+    mkdir -p /mt5-data/terminal /mt5-data/wineprefix /opt/tradebox/plugins && \
+    chown -R trader:trader /mt5-data /opt/tradebox
+
+COPY --from=builder /out/tradebox /usr/local/bin/tradebox
+COPY plugins/ /opt/tradebox/plugins/
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/tradebox /usr/local/bin/entrypoint.sh
+
+USER trader
+WORKDIR /mt5-data
+
+# 6080: noVNC browser remote desktop (bind to 127.0.0.1 on host; access via Tailscale/Cloudflare Tunnel)
+# 8092: TradeBox Local Watchdog Dashboard & REST API
+EXPOSE 6080 8092
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD curl -fsS http://127.0.0.1:8092/healthz || exit 1
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

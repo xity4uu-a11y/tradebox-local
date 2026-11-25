@@ -1,0 +1,29 @@
+services:
+  tradebox-mt5:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.mt5-novnc
+    container_name: tradebox-mt5
+    restart: unless-stopped
+    shm_size: "1gb"
+    environment:
+      - SCREEN_WIDTH=1366
+      - SCREEN_HEIGHT=768
+      - AUTO_START_MT5=false
+      - AUTO_DOWNLOAD_MT5=false
+      # Optional: protect noVNC desktop with a password
+      # - VNC_PASSWORD=change-me-local-only
+      # Optional: alert channels read via environment expansion in tradebox.json
+      - TRADEBOX_TELEGRAM_BOT_TOKEN=${TRADEBOX_TELEGRAM_BOT_TOKEN:-}
+      - TRADEBOX_TELEGRAM_CHAT_ID=${TRADEBOX_TELEGRAM_CHAT_ID:-}
+      - TRADEBOX_DISCORD_WEBHOOK_URL=${TRADEBOX_DISCORD_WEBHOOK_URL:-}
+      - TRADEBOX_SLACK_WEBHOOK_URL=${TRADEBOX_SLACK_WEBHOOK_URL:-}
+      - TRADEBOX_WEBHOOK_URL=${TRADEBOX_WEBHOOK_URL:-}
+      - TRADEBOX_WEBHOOK_SECRET=${TRADEBOX_WEBHOOK_SECRET:-}
+    ports:
+      # Bound strictly to localhost on the host machine (zero exposed public RDP/VNC ports).
+      # Access remotely over your private Tailscale tailnet or Cloudflare Tunnel.
+      - "127.0.0.1:6080:6080"
+      - "127.0.0.1:8092:8092"
+    volumes:
+      - ./mt5-data:/mt5-data
