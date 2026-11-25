@@ -1,0 +1,38 @@
+{
+  "id": "broker-latency-guard",
+  "name": "Broker Latency Guard",
+  "version": "1.0.0",
+  "category": "latency",
+  "author": "xity4uu-a11y",
+  "description": "Monitors broker TCP handshake RTT, p95 latency spikes, jitter bursts, and packet loss against configurable execution thresholds.",
+  "min_tradebox_version": "1.0.0",
+  "enabled_by_default": true,
+  "tags": ["latency", "tcp", "execution", "broker"],
+  "triggers": ["latency.probe", "latency.window_update"],
+  "config": {
+    "probe_interval_sec": 15,
+    "rolling_window_samples": 60,
+    "warn_rtt_ms": 120,
+    "critical_loss_pct": 10
+  },
+  "rules": [
+    {
+      "id": "broker-port-unreachable",
+      "match": "status == down",
+      "severity": "critical",
+      "action": "dispatch_alert"
+    },
+    {
+      "id": "broker-rtt-threshold-exceeded",
+      "match": "last_ms > max_latency_ms",
+      "severity": "warn",
+      "action": "dispatch_alert"
+    },
+    {
+      "id": "broker-jitter-spike",
+      "match": "jitter_ms > 45",
+      "severity": "warn",
+      "action": "record_telemetry"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "telegram-crash-notifier",
+  "name": "Telegram Crash & Recovery Notifier",
+  "version": "1.0.0",
+  "category": "alerts",
+  "author": "xity4uu-a11y",
+  "description": "Routes terminal crashes, crash-loop circuit breaker trips, and critical MT5 journal faults to Telegram with per-rule cooldown anti-storm throttling.",
+  "min_tradebox_version": "1.0.0",
+  "enabled_by_default": true,
+  "tags": ["telegram", "alerts", "cooldown", "watchdog"],
+  "triggers": ["watchdog.crashed", "watchdog.circuit_open", "journal.error"],
+  "config": {
+    "channel": "telegram",
+    "cooldown_sec": 300,
+    "disable_web_page_preview": true
+  },
+  "rules": [
+    {
+      "id": "notify-circuit-breaker-open",
+      "match": "watchdog.event == circuit_open",
+      "severity": "critical",
+      "action": "send_telegram_immediate"
+    },
+    {
+      "id": "notify-process-crash",
+      "match": "watchdog.event == crashed",
+      "severity": "warn",
+      "action": "send_telegram_throttled"
+    }
+  ]
+}

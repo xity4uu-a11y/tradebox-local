@@ -1,0 +1,33 @@
+{
+  "id": "old-laptop-24x7-profile",
+  "name": "Spare Laptop 24/7 Low-Overhead Profile",
+  "version": "1.0.0",
+  "category": "host",
+  "author": "xity4uu-a11y",
+  "description": "Tuned supervision intervals, AC lid-closed keep-awake checklist, and low-CPU polling defaults for repurposing a spare home laptop into a zero-cost MT5 host.",
+  "min_tradebox_version": "1.0.0",
+  "enabled_by_default": true,
+  "tags": ["laptop", "self-hosted", "powercfg", "systemd-inhibit", "caffeinate"],
+  "triggers": ["host.startup", "host.readiness_check"],
+  "config": {
+    "min_cpu_cores": 2,
+    "min_ram_mb": 4096,
+    "latency_check_sec": 20,
+    "journal_poll_sec": 3,
+    "bind_loopback_only": true
+  },
+  "rules": [
+    {
+      "id": "verify-loopback-binding",
+      "match": "http_addr starts_with 127.0.0.1",
+      "severity": "info",
+      "action": "confirm_local_hygiene"
+    },
+    {
+      "id": "warn-low-host-memory",
+      "match": "total_ram_mb < 4096",
+      "severity": "warn",
+      "action": "recommend_single_chart_profile"
+    }
+  ]
+}

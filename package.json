@@ -1,0 +1,32 @@
+{
+  "name": "tradebox-local",
+  "version": "1.0.0",
+  "description": "Self-hosted 24/7 MetaTrader 5 (MT5) watchdog, UTF-16LE log parser, broker TCP latency monitor, and Wine+noVNC container stack.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "create-tradebox-local": "./bin/create-tradebox-local.mjs"
+  },
+  "scripts": {
+    "validate:plugins": "node scripts/validate-plugins.mjs",
+    "init:dry-run": "node bin/create-tradebox-local.mjs --dry-run"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "keywords": [
+    "metatrader5",
+    "mt5",
+    "mql5",
+    "watchdog",
+    "self-hosted",
+    "docker",
+    "wine",
+    "novnc"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xity4uu-a11y/tradebox-local.git"
+  }
+}

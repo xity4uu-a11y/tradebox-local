@@ -1,0 +1,43 @@
+{
+  "id": "mt5-utf16-ea-watchdog",
+  "name": "MT5 UTF-16LE EA Watchdog",
+  "version": "1.0.0",
+  "category": "journal",
+  "author": "xity4uu-a11y",
+  "description": "Decodes native Windows/Wine UTF-16LE and UTF-8 MetaTrader 5 terminal and MQL5 Experts logs for Error 4756, AutoTrading disablement, and disconnects.",
+  "min_tradebox_version": "1.0.0",
+  "enabled_by_default": true,
+  "tags": ["mt5", "mql5", "utf-16le", "journal", "experts"],
+  "triggers": ["journal.line", "journal.rotation"],
+  "config": {
+    "poll_interval_sec": 2,
+    "encodings": ["UTF-16LE", "UTF-8"],
+    "scan_subdirs": ["Logs", "MQL5/Logs"]
+  },
+  "rules": [
+    {
+      "id": "catch-error-4756",
+      "match": "rule_id == mt5_error_4756 || rule_id == mt5_ordersend_failed",
+      "severity": "critical",
+      "action": "dispatch_alert"
+    },
+    {
+      "id": "catch-autotrading-disabled",
+      "match": "rule_id == mt5_autotrading_disabled",
+      "severity": "critical",
+      "action": "dispatch_alert"
+    },
+    {
+      "id": "catch-broker-disconnect",
+      "match": "rule_id == mt5_no_connection || rule_id == mt5_common_error",
+      "severity": "critical",
+      "action": "dispatch_alert"
+    },
+    {
+      "id": "catch-requote-or-busy",
+      "match": "rule_id == mt5_requote || rule_id == mt5_trade_context_busy",
+      "severity": "warn",
+      "action": "record_telemetry"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-label="tradebox-local self-hosted 24/7 MetaTrader 5 watchdog banner">
+  <defs>
+    <pattern id="subtle-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#181b21" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- Obsidian dark canvas -->
+  <rect width="1200" height="340" rx="16" fill="#0b0c0e"/>
+  <rect width="1200" height="340" rx="16" fill="url(#subtle-grid)"/>
+  <rect x="1" y="1" width="1198" height="338" rx="15" fill="none" stroke="#262930" stroke-width="1"/>
+
+  <!-- Left Hero Column -->
+  <g transform="translate(56, 54)">
+    <!-- Monogram mark + release tag -->
+    <rect x="0" y="0" width="38" height="38" rx="9" fill="#14161a" stroke="#343944" stroke-width="1"/>
+    <text x="19" y="24" text-anchor="middle" fill="#f5f5f7" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13" font-weight="600" letter-spacing="0.6">TB</text>
+
+    <rect x="52" y="7" width="166" height="24" rx="12" fill="#14161a" stroke="#262930" stroke-width="1"/>
+    <circle cx="67" cy="19" r="3.5" fill="#57c58a"/>
+    <text x="79" y="23" fill="#c7c7cc" font-family="JetBrains Mono, ui-monospace, SFMono-Regular, Consolas, monospace" font-size="11.5">v1.0.0  CGO_ENABLED=0</text>
+
+    <!-- Product Title -->
+    <text x="0" y="96" fill="#f5f5f7" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="44" font-weight="600" letter-spacing="-1.2">tradebox-local</text>
+
+    <!-- Subtitle -->
+    <text x="0" y="132" fill="#a1a1aa" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="17" font-weight="400">Self-hosted 24/7 MetaTrader 5 watchdog, UTF-16LE EA log parser,</text>
+    <text x="0" y="156" fill="#a1a1aa" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="17" font-weight="400">broker TCP latency monitor, and Linux Wine+noVNC stack.</text>
+
+    <!-- Feature Chips -->
+    <g transform="translate(0, 186)" font-family="JetBrains Mono, ui-monospace, SFMono-Regular, Consolas, monospace" font-size="11.5">
+      <rect x="0" y="0" width="136" height="28" rx="7" fill="#14161a" stroke="#262930"/>
+      <text x="68" y="18" text-anchor="middle" fill="#e5e5ea">Single Go Binary</text>
+
+      <rect x="148" y="0" width="144" height="28" rx="7" fill="#14161a" stroke="#262930"/>
+      <text x="220" y="18" text-anchor="middle" fill="#e5e5ea">UTF-16LE MT5 Logs</text>
+
+      <rect x="304" y="0" width="148" height="28" rx="7" fill="#14161a" stroke="#262930"/>
+      <text x="378" y="18" text-anchor="middle" fill="#e5e5ea">TCP Broker Probe</text>
+
+      <rect x="464" y="0" width="142" height="28" rx="7" fill="#14161a" stroke="#262930"/>
+      <text x="535" y="18" text-anchor="middle" fill="#e5e5ea">Wine64 + noVNC</text>
+    </g>
+  </g>
+
+  <!-- Right Live Telemetry Preview Card -->
+  <g transform="translate(724, 42)">
+    <rect x="0" y="0" width="420" height="256" rx="14" fill="#14161a" stroke="#262930" stroke-width="1"/>
+
+    <!-- Card Header -->
+    <text x="22" y="34" fill="#f5f5f7" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="600">24/7 Local Trading Node</text>
+    <rect x="304" y="18" width="94" height="22" rx="11" fill="#152b20" stroke="#28593f"/>
+    <text x="351" y="33" text-anchor="middle" fill="#57c58a" font-family="JetBrains Mono, ui-monospace, Consolas, monospace" font-size="10.5" font-weight="600">RUNNING</text>
+
+    <line x1="22" y1="52" x2="398" y2="52" stroke="#262930" stroke-width="1"/>
+
+    <!-- Metrics Row -->
+    <g transform="translate(22, 68)" font-family="JetBrains Mono, ui-monospace, Consolas, monospace">
+      <rect x="0" y="0" width="116" height="58" rx="9" fill="#1b1e24" stroke="#262930"/>
+      <text x="12" y="21" fill="#8e8e93" font-size="10.5">BROKER RTT</text>
+      <text x="12" y="44" fill="#f5f5f7" font-size="16" font-weight="600">14.2 ms</text>
+
+      <rect x="130" y="0" width="116" height="58" rx="9" fill="#1b1e24" stroke="#262930"/>
+      <text x="142" y="21" fill="#8e8e93" font-size="10.5">VPS COST</text>
+      <text x="142" y="44" fill="#57c58a" font-size="16" font-weight="600">$0 / mo</text>
+
+      <rect x="260" y="0" width="116" height="58" rx="9" fill="#1b1e24" stroke="#262930"/>
+      <text x="272" y="21" fill="#8e8e93" font-size="10.5">MT5 LOGS</text>
+      <text x="272" y="44" fill="#e5e5ea" font-size="16" font-weight="600">UTF-16LE</text>
+    </g>
+
+    <!-- Sparkline Strip -->
+    <g transform="translate(22, 142)">
+      <rect x="0" y="0" width="376" height="52" rx="9" fill="#1b1e24" stroke="#262930"/>
+      <text x="12" y="18" fill="#8e8e93" font-family="JetBrains Mono, ui-monospace, Consolas, monospace" font-size="10">access.metatrader5.com:443  p50 14.2ms  p95 18.6ms  loss 0%</text>
+      <line x1="12" y1="26" x2="364" y2="26" stroke="#343944" stroke-dasharray="3 3" stroke-width="1"/>
+      <polyline fill="none" stroke="#e5e5ea" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+        points="14,39 42,37 70,38 98,35 126,38 154,36 182,39 210,33 238,37 266,38 294,36 322,37 350,35 364,36"/>
+    </g>
+
+    <!-- Footer Status -->
+    <text x="22" y="232" fill="#8e8e93" font-family="JetBrains Mono, ui-monospace, Consolas, monospace" font-size="11">127.0.0.1:8092 (UI)  |  127.0.0.1:6080 (noVNC)  |  Tailscale ready</text>
+  </g>
+</svg>

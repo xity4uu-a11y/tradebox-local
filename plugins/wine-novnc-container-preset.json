@@ -1,0 +1,34 @@
+{
+  "id": "wine-novnc-container-preset",
+  "name": "Linux Wine64 + noVNC Container Preset",
+  "version": "1.0.0",
+  "category": "container",
+  "author": "xity4uu-a11y",
+  "description": "Standard container supervision preset running MetaTrader 5 portable under Wine64 + Xvfb + Fluxbox with browser noVNC on loopback port 6080.",
+  "min_tradebox_version": "1.0.0",
+  "enabled_by_default": true,
+  "tags": ["docker", "wine", "novnc", "linux", "headless"],
+  "triggers": ["container.boot", "watchdog.start"],
+  "config": {
+    "terminal_command": "wine",
+    "terminal_args": ["/mt5-data/terminal/terminal64.exe", "/portable"],
+    "display": ":99",
+    "novnc_port": 6080,
+    "dashboard_port": 8092,
+    "shm_size": "1gb"
+  },
+  "rules": [
+    {
+      "id": "restart-wine-on-crash",
+      "match": "watchdog.exit_code != 0",
+      "severity": "warn",
+      "action": "exponential_backoff_restart"
+    },
+    {
+      "id": "protect-novnc-loopback",
+      "match": "novnc_host == 127.0.0.1",
+      "severity": "info",
+      "action": "require_tailscale_or_tunnel"
+    }
+  ]
+}

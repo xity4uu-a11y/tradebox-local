@@ -1,0 +1,239 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="580" viewBox="0 0 1080 580" role="img" aria-label="Animated TradeBox Local 15-second watchdog recovery demonstration">
+  <defs>
+    <style>
+      .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; }
+      .mono { font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
+
+      /* 15s cycle phases:
+         Phase 1 (0% - 26%): Healthy running
+         Phase 2 (27% - 53%): Crash + Error 4756 detected
+         Phase 3 (54% - 74%): Auto-restart in 1.8s + Telegram alert dispatched
+         Phase 4 (75% - 100%): Recovered running healthy */
+      @keyframes p1 {
+        0%, 25% { opacity: 1; }
+        27%, 100% { opacity: 0; }
+      }
+      @keyframes p2 {
+        0%, 26% { opacity: 0; }
+        28%, 52% { opacity: 1; }
+        54%, 100% { opacity: 0; }
+      }
+      @keyframes p3 {
+        0%, 53% { opacity: 0; }
+        55%, 73% { opacity: 1; }
+        75%, 100% { opacity: 0; }
+      }
+      @keyframes p4 {
+        0%, 74% { opacity: 0; }
+        76%, 98% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+      @keyframes showAfterCrash {
+        0%, 26% { opacity: 0; }
+        28%, 99% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+      @keyframes showAfterRestart {
+        0%, 54% { opacity: 0; }
+        56%, 99% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+      @keyframes showRecovered {
+        0%, 74% { opacity: 0; }
+        76%, 99% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+      @keyframes progressFill {
+        0% { width: 0px; }
+        100% { width: 1008px; }
+      }
+
+      .phase-1 { animation: p1 15s linear infinite; }
+      .phase-2 { animation: p2 15s linear infinite; }
+      .phase-3 { animation: p3 15s linear infinite; }
+      .phase-4 { animation: p4 15s linear infinite; }
+      .after-crash { animation: showAfterCrash 15s linear infinite; }
+      .after-restart { animation: showAfterRestart 15s linear infinite; }
+      .after-recovered { animation: showRecovered 15s linear infinite; }
+      .timeline-bar { animation: progressFill 15s linear infinite; }
+    </style>
+  </defs>
+
+  <!-- Canvas -->
+  <rect width="1080" height="580" rx="16" fill="#0b0c0e"/>
+  <rect x="1" y="1" width="1078" height="578" rx="15" fill="none" stroke="#262930" stroke-width="1"/>
+
+  <!-- Top Bar -->
+  <rect x="1" y="1" width="1078" height="58" rx="15" fill="#14161a"/>
+  <line x1="1" y1="59" x2="1079" y2="59" stroke="#262930" stroke-width="1"/>
+
+  <rect x="24" y="15" width="28" height="28" rx="7" fill="#1b1e24" stroke="#343944"/>
+  <text x="38" y="33" text-anchor="middle" fill="#f5f5f7" class="sans" font-size="11" font-weight="600">TB</text>
+  <text x="64" y="30" fill="#f5f5f7" class="sans" font-size="14" font-weight="600">TradeBox Local</text>
+  <text x="64" y="45" fill="#8e8e93" class="mono" font-size="10.5">http://127.0.0.1:8092  |  noVNC http://127.0.0.1:6080</text>
+
+  <rect x="752" y="17" width="136" height="24" rx="12" fill="#152b20" stroke="#28593f"/>
+  <text x="820" y="33" text-anchor="middle" fill="#57c58a" class="mono" font-size="11" font-weight="600">VPS COST: $0/mo</text>
+
+  <rect x="900" y="17" width="154" height="24" rx="12" fill="#1b1e24" stroke="#2f343f"/>
+  <text x="977" y="33" text-anchor="middle" fill="#c7c7cc" class="mono" font-size="11">15s LIVE LOOP</text>
+
+  <!-- Row 1: Two Cards (Watchdog Health + Broker Execution Latency) -->
+  <!-- Watchdog Card -->
+  <g transform="translate(24, 78)">
+    <rect width="504" height="222" rx="12" fill="#14161a" stroke="#262930"/>
+    <text x="20" y="30" fill="#f5f5f7" class="sans" font-size="14" font-weight="600">Terminal Watchdog Supervisor</text>
+    <text x="20" y="47" fill="#8e8e93" class="mono" font-size="11">terminal64.exe /portable  (backoff 1s -&gt; 2s -&gt; 4s)</text>
+
+    <!-- Animated Status Pill -->
+    <g class="phase-1">
+      <rect x="394" y="16" width="90" height="24" rx="12" fill="#152b20" stroke="#28593f"/>
+      <text x="439" y="32" text-anchor="middle" fill="#57c58a" class="mono" font-size="11" font-weight="600">RUNNING</text>
+    </g>
+    <g class="phase-2">
+      <rect x="388" y="16" width="96" height="24" rx="12" fill="#2e1615" stroke="#6c2824"/>
+      <text x="436" y="32" text-anchor="middle" fill="#f07167" class="mono" font-size="11" font-weight="600">CRASHED</text>
+    </g>
+    <g class="phase-3">
+      <rect x="372" y="16" width="112" height="24" rx="12" fill="#2b2313" stroke="#69521f"/>
+      <text x="428" y="32" text-anchor="middle" fill="#e3b341" class="mono" font-size="11" font-weight="600">RESTARTING</text>
+    </g>
+    <g class="phase-4">
+      <rect x="382" y="16" width="102" height="24" rx="12" fill="#152b20" stroke="#28593f"/>
+      <text x="433" y="32" text-anchor="middle" fill="#57c58a" class="mono" font-size="11" font-weight="600">RECOVERED</text>
+    </g>
+
+    <!-- Detail Boxes -->
+    <g transform="translate(20, 66)">
+      <rect x="0" y="0" width="146" height="58" rx="9" fill="#1b1e24" stroke="#262930"/>
+      <text x="12" y="20" fill="#8e8e93" class="sans" font-size="11">Process ID</text>
+      <text x="12" y="44" fill="#f5f5f7" class="mono phase-1" font-size="17" font-weight="600">4821</text>
+      <text x="12" y="44" fill="#f07167" class="mono phase-2" font-size="17" font-weight="600">EXIT 1</text>
+      <text x="12" y="44" fill="#e3b341" class="mono phase-3" font-size="17" font-weight="600">1.8s</text>
+      <text x="12" y="44" fill="#57c58a" class="mono phase-4" font-size="17" font-weight="600">5104</text>
+
+      <rect x="159" y="0" width="146" height="58" rx="9" fill="#1b1e24" stroke="#262930"/>
+      <text x="171" y="20" fill="#8e8e93" class="sans" font-size="11">Restarts (1h)</text>
+      <text x="171" y="44" fill="#f5f5f7" class="mono phase-1" font-size="17" font-weight="600">0 / 12</text>
+      <text x="171" y="44" fill="#f07167" class="mono phase-2" font-size="17" font-weight="600">1 / 12</text>
+      <text x="171" y="44" fill="#e3b341" class="mono phase-3" font-size="17" font-weight="600">1 / 12</text>
+      <text x="171" y="44" fill="#57c58a" class="mono phase-4" font-size="17" font-weight="600">1 / 12</text>
+
+      <rect x="318" y="0" width="146" height="58" rx="9" fill="#1b1e24" stroke="#262930"/>
+      <text x="330" y="20" fill="#8e8e93" class="sans" font-size="11">Circuit Breaker</text>
+      <text x="330" y="44" fill="#57c58a" class="mono" font-size="17" font-weight="600">ARMED</text>
+    </g>
+
+    <!-- Status Event Banner inside Watchdog Card -->
+    <g transform="translate(20, 140)">
+      <rect width="464" height="62" rx="9" fill="#1b1e24" stroke="#262930"/>
+      <g class="phase-1">
+        <text x="14" y="26" fill="#57c58a" class="mono" font-size="11.5" font-weight="600">[HEALTHY] MetaTrader 5 terminal running continuously (uptime 41h 12m)</text>
+        <text x="14" y="46" fill="#a1a1aa" class="mono" font-size="11">Supervising terminal64.exe + tailing MQL5/Logs/20261125.log (UTF-16LE)</text>
+      </g>
+      <g class="phase-2">
+        <text x="14" y="26" fill="#f07167" class="mono" font-size="11.5" font-weight="600">[INCIDENT] Unexpected process exit (code 1) + MT5 Error 4756 detected</text>
+        <text x="14" y="46" fill="#e5e5ea" class="mono" font-size="11">Triggering automatic crash recovery and alert dispatch...</text>
+      </g>
+      <g class="phase-3">
+        <text x="14" y="26" fill="#e3b341" class="mono" font-size="11.5" font-weight="600">[RECOVERY] Auto-restarted terminal64.exe in 1.8s (attempt #1)</text>
+        <text x="14" y="46" fill="#7bb0f8" class="mono" font-size="11">Telegram Bot API sendMessage -&gt; HTTP 200 OK (cooldown 300s armed)</text>
+      </g>
+      <g class="phase-4">
+        <text x="14" y="26" fill="#57c58a" class="mono" font-size="11.5" font-weight="600">[RESTORED] New PID 5104 active; EA TrendBreakoutEA reattached cleanly</text>
+        <text x="14" y="46" fill="#a1a1aa" class="mono" font-size="11">Zero manual VPS intervention required  |  Self-hosted cost: $0/mo</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Broker Latency Card -->
+  <g transform="translate(552, 78)">
+    <rect width="504" height="222" rx="12" fill="#14161a" stroke="#262930"/>
+    <text x="20" y="30" fill="#f5f5f7" class="sans" font-size="14" font-weight="600">Broker TCP Execution Latency</text>
+    <text x="20" y="47" fill="#8e8e93" class="mono" font-size="11">access.metatrader5.com:443  (threshold 120 ms)</text>
+
+    <rect x="394" y="16" width="90" height="24" rx="12" fill="#152b20" stroke="#28593f"/>
+    <text x="439" y="32" text-anchor="middle" fill="#57c58a" class="mono" font-size="11" font-weight="600">14.2 ms</text>
+
+    <!-- Sparkline Panel -->
+    <g transform="translate(20, 66)">
+      <rect width="464" height="86" rx="9" fill="#1b1e24" stroke="#262930"/>
+      <line x1="14" y1="24" x2="450" y2="24" stroke="#f07167" stroke-opacity="0.45" stroke-dasharray="4 4" stroke-width="1"/>
+      <text x="446" y="19" text-anchor="end" fill="#f07167" class="mono" font-size="9.5">120ms alert threshold</text>
+      <polyline fill="none" stroke="#e5e5ea" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+        points="16,66 48,63 80,65 112,60 144,64 176,58 208,63 240,61 272,56 304,63 336,62 368,60 400,64 432,61 448,62"/>
+      <circle cx="448" cy="62" r="3.5" fill="#57c58a"/>
+    </g>
+
+    <!-- Percentile Strip -->
+    <g transform="translate(20, 166)" font-family="JetBrains Mono, ui-monospace, Consolas, monospace" font-size="11.5">
+      <rect x="0" y="0" width="108" height="36" rx="8" fill="#1b1e24" stroke="#262930"/>
+      <text x="12" y="22" fill="#a1a1aa">p50 <tspan fill="#f5f5f7" font-weight="600">14.2ms</tspan></text>
+
+      <rect x="118" y="0" width="108" height="36" rx="8" fill="#1b1e24" stroke="#262930"/>
+      <text x="130" y="22" fill="#a1a1aa">p95 <tspan fill="#f5f5f7" font-weight="600">18.6ms</tspan></text>
+
+      <rect x="236" y="0" width="110" height="36" rx="8" fill="#1b1e24" stroke="#262930"/>
+      <text x="248" y="22" fill="#a1a1aa">jit <tspan fill="#f5f5f7" font-weight="600">1.9ms</tspan></text>
+
+      <rect x="356" y="0" width="108" height="36" rx="8" fill="#1b1e24" stroke="#262930"/>
+      <text x="368" y="22" fill="#a1a1aa">loss <tspan fill="#57c58a" font-weight="600">0.0%</tspan></text>
+    </g>
+  </g>
+
+  <!-- Row 2: Live MT5 UTF-16LE Journal & Alert Stream -->
+  <g transform="translate(24, 318)">
+    <rect width="1032" height="214" rx="12" fill="#14161a" stroke="#262930"/>
+    <text x="20" y="30" fill="#f5f5f7" class="sans" font-size="14" font-weight="600">Decoded MetaTrader 5 Journal (UTF-16LE BOM) &amp; Alert Dispatch</text>
+    <text x="20" y="47" fill="#8e8e93" class="mono" font-size="11">MQL5/Logs/20261125.log  |  incremental byte-offset tailer  |  zero duplicate alerts</text>
+
+    <line x1="20" y1="60" x2="1012" y2="60" stroke="#262930"/>
+
+    <!-- Log Row 1 (Always visible) -->
+    <g transform="translate(20, 74)" class="mono" font-size="11.5">
+      <text x="0" y="14" fill="#8e8e93">09:14:22.418</text>
+      <rect x="108" y="0" width="58" height="20" rx="6" fill="#152b20" stroke="#28593f"/>
+      <text x="137" y="14" text-anchor="middle" fill="#57c58a" font-size="10">TRADE</text>
+      <text x="182" y="14" fill="#c7c7cc">Trades</text>
+      <text x="310" y="14" fill="#f5f5f7">'50192831': instant buy 0.10 EURUSD at 1.08420 filled (deal #44182011)</text>
+      <text x="990" y="14" text-anchor="end" fill="#8e8e93">UTF-16LE</text>
+    </g>
+
+    <!-- Log Row 2 (Appears Phase 2+) -->
+    <g transform="translate(20, 106)" class="mono after-crash" font-size="11.5">
+      <rect x="-8" y="-5" width="1008" height="28" rx="6" fill="#2e1615" fill-opacity="0.55"/>
+      <text x="0" y="14" fill="#e5e5ea">09:15:02.119</text>
+      <rect x="108" y="0" width="58" height="20" rx="6" fill="#2e1615" stroke="#6c2824"/>
+      <text x="137" y="14" text-anchor="middle" fill="#f07167" font-size="10">ERROR</text>
+      <text x="182" y="14" fill="#f07167">TrendBreakoutEA</text>
+      <text x="310" y="14" fill="#f5f5f7">OrderSend failed: Error 4756 [mt5_error_4756] -&gt; process crashed (code 1)</text>
+      <text x="990" y="14" text-anchor="end" fill="#f07167">UTF-16LE</text>
+    </g>
+
+    <!-- Log Row 3 (Appears Phase 3+) -->
+    <g transform="translate(20, 138)" class="mono after-restart" font-size="11.5">
+      <text x="0" y="14" fill="#e5e5ea">09:15:03.920</text>
+      <rect x="108" y="0" width="58" height="20" rx="6" fill="#2b2313" stroke="#69521f"/>
+      <text x="137" y="14" text-anchor="middle" fill="#e3b341" font-size="10">ALERT</text>
+      <text x="182" y="14" fill="#e3b341">Telegram</text>
+      <text x="310" y="14" fill="#f5f5f7">Watchdog restarted terminal64.exe in 1.8s | Telegram alert sent (HTTP 200)</text>
+      <text x="990" y="14" text-anchor="end" fill="#7bb0f8">DISPATCH</text>
+    </g>
+
+    <!-- Log Row 4 (Appears Phase 4) -->
+    <g transform="translate(20, 170)" class="mono after-recovered" font-size="11.5">
+      <text x="0" y="14" fill="#e5e5ea">09:15:05.410</text>
+      <rect x="108" y="0" width="58" height="20" rx="6" fill="#152b20" stroke="#28593f"/>
+      <text x="137" y="14" text-anchor="middle" fill="#57c58a" font-size="10">INFO</text>
+      <text x="182" y="14" fill="#57c58a">Network</text>
+      <text x="310" y="14" fill="#f5f5f7">'50192831': authorized on MetaQuotes-Demo (ping: 14.20 ms) - PID 5104</text>
+      <text x="990" y="14" text-anchor="end" fill="#57c58a">UTF-16LE</text>
+    </g>
+  </g>
+
+  <!-- Cycle Progress Hairline -->
+  <g transform="translate(36, 550)">
+    <rect width="1008" height="4" rx="2" fill="#1b1e24"/>
+    <rect class="timeline-bar" height="4" rx="2" fill="#57c58a" width="0"/>
+  </g>
+</svg>
